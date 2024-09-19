@@ -18,18 +18,23 @@ def sent_detector():
     text_to_analyze = request.args.get('textToAnalyze')
     response = emotion_detector(text_to_analyze)
 
-    dominant_emotion_string = response['dominant_emotion']
+    if response['dominant_emotion'] is None:
+        return_string = "Invalid text! Please try again!"
+    else:
+        dominant_emotion_string = response['dominant_emotion']
 
-    emotions_only = response.copy()
-    emotions_only.pop("dominant_emotion")
+        emotions_only = response.copy()
+        emotions_only.pop("dominant_emotion")
 
-    emotions_only_string = ""
-    for key, value in emotions_only.items():
-        emotions_only_string += f"\'{key}\': {value}, "
-    emotions_only_string = emotions_only_string[:-2]
+        emotions_only_string = ""
+        for key, value in emotions_only.items():
+            emotions_only_string += f"\'{key}\': {value}, "
+        emotions_only_string = emotions_only_string[:-2]
 
-    return f'For the given statement, the system response is {emotions_only_string}. \
-    The dominant emotion is <b>{dominant_emotion_string}</b>.'
+        return_string = f'For the given statement, the system response is {emotions_only_string}. \
+        The dominant emotion is <b>{dominant_emotion_string}</b>.'
+
+    return return_string
 
 @app.route("/")
 def render_index_page():
